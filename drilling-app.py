@@ -23,9 +23,13 @@ body {background-color: #DCE3D5;
       width: 1400px;
       margin: 15px auto;
 }
+footer {
+  display: none;
+}
 </style>""",
     unsafe_allow_html=True,
 )
+
 
 # Insert title of the app
 st.title("Drilling Engineering App ®")
