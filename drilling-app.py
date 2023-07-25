@@ -75,3 +75,34 @@ with st.sidebar:
         options=["Home", "Data", "3D Plots", "Basic Calculations"],
         icons=["house", "tv-fill", "box", "calculator"],
     )
+
+
+# Useful functions
+# Function for observing data
+def data(dataframe):
+    st.subheader("**View dataframe**")
+    st.write(dataframe.head())
+    st.subheader("**Statistical summary**")
+    st.write(dataframe.describe())
+
+
+# Function to visualize wells in 3D
+def plots(dataframe):
+    st.subheader("Visualize the 3D trajectory of a well")
+    x = st.selectbox("Choose DispNS", dataframe.columns)
+    y = st.selectbox("Choose DispEW", dataframe.columns)
+    z = st.selectbox("Choose tvd", dataframe.columns)
+    fig = px.line_3d(dataframe, x, y, z)
+    st.plotly_chart(fig)
+
+
+# Call data
+if file:
+    df = pd.read_csv(file)
+
+    if options == "Data":
+        data(df)
+
+    elif options == "3D Plots":
+        plots(df)
+
