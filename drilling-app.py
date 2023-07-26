@@ -109,4 +109,3 @@ if file:
 
     elif options == "3D Plots":
         plots(df)
-
