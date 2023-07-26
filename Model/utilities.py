@@ -76,3 +76,41 @@ dh = 970.8  # ft
 
 #%% Results - Example 1
 well_J(Data(tvd, kop, bur, dh))
+
+#Villarroel Erick
+Data = namedtuple("Input", "TVD KOP BUR DOR DH")
+Output = namedtuple("Output", "R1 R2 Theta TVD_EOB Md_EOB Dh_EOB Tan_len Md_SOD "
+                              "TVD_SOD DH_SOD Md_total")
+def well_S(data: Data, unit="ingles") -> Output:
+    tvd = data.TVD
+    kop = data.KOP
+    bur = data.BUR
+    dor = data.DOR
+    dh = data.DH
+    if unit == "ingles":
+        R1 = 5729.58 / bur
+        R2 = 5729.58 / dor
+    else:
+        R1 = 1718.87 / bur
+        R1 = 1718.87 / dor
+    if dh >= (R1 + R2):
+        fe = dh - (R1 + R2)
+    elif dh <= (R1 + R2):
+        fe = R1 - (dh - R2)
+    eo = tvd - kop
+    foe = degrees(atan(fe / eo))
+    of = sqrt(fe**2 + eo**2)
+
+    fg = R1 + R2
+    fog = degrees(asin(fg / of))
+    theta_eog = fog - foe
+
+    tvd_eob = kop + (R1 + sin(radians(theta_eog)))
+    md_eob = kop + (theta_eog / bur) * 100
+
+    dh_eob = R1 + (R1 + cos(radians(theta_eog)))
+    md_sod = op + (theta_eog / bur) * 100
+
+
+
+
