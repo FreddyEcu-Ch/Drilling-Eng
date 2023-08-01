@@ -1,6 +1,7 @@
 #%% Import Python libraries
 from collections import namedtuple
 from math import acos, asin, cos, sin, atan, sqrt, radians, degrees
+import streamlit as st
 
 #%% Design function to calculate J-well type parameters
 
@@ -57,15 +58,15 @@ def well_J(data: Data, unit="ingles") -> Output:
     for param, value in zip(names, output_J):
         if unit == "ingles":
             if param == "theta":
-                print(f"{param} -> {value:.3f} degrees")
+                st.success(f"{param} -> {value:.3f} degrees")
             else:
-                print(f"{param} -> {value:.3f} ft")
+                st.success(f"{param} -> {value:.3f} ft")
 
         else:
             if param == "theta":
-                print(f"{param} -> {value:.3f} degrees")
+                st.success(f"{param} -> {value:.3f} degrees")
             else:
-                print(f"{param} -> {value:.3f} m")
+                st.success(f"{param} -> {value:.3f} m")
 
 
 #%% data - Example 1
