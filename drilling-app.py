@@ -356,38 +356,37 @@ if file:
     elif options == "3D Plots":
         plots(df)
 
-    elif options == "Basic Calculations":
-        st.subheader("**Select units**")
-        units = st.selectbox("Units", ("ingles", "metric"))
-        if st.checkbox("J type well"):
-            Data = namedtuple("Input", "TVD KOP BUR DH")
-            st.subheader("**Enter input values**")
-            kop = st.number_input("Enter kop value: ")
-            tvd = st.number_input("Enter tvd value: ")
-            dh = st.number_input("Enter dh value: ")
-            bur = st.number_input("Enter bur value")
-            st.subheader("**Show results**")
-            well_J(Data(tvd, kop, bur, dh), units)
+if options == "Basic Calculations":
+    st.subheader("**Select units**")
+    units = st.selectbox("Units", ("ingles", "metric"))
+    if st.checkbox("J type well"):
+        Data = namedtuple("Input", "TVD KOP BUR DH")
+        st.subheader("**Enter input values**")
+        kop = st.number_input("Enter kop value: ")
+        tvd = st.number_input("Enter tvd value: ")
+        dh = st.number_input("Enter dh value: ")
+        bur = st.number_input("Enter bur value")
+        st.subheader("**Show results**")
+        well_J(Data(tvd, kop, bur, dh), units)
 
-        elif st.checkbox("S type well"):
-            Data = namedtuple("Input", "TVD KOP BUR DOR DH")
-            st.subheader("**Enter input values**")
-            kop = st.number_input("Enter kop value: ")
-            tvd = st.number_input("Enter tvd value: ")
-            dh = st.number_input("Enter dh value: ")
-            bur = st.number_input("Enter bur value")
-            dor = st.number_input("Enter dor value")
-            st.subheader("**Show results**")
-            well_S(Data(tvd, kop, bur, dor, dh), units)
+    elif st.checkbox("S type well"):
+        Data = namedtuple("Input", "TVD KOP BUR DOR DH")
+        st.subheader("**Enter input values**")
+        kop = st.number_input("Enter kop value: ")
+        tvd = st.number_input("Enter tvd value: ")
+        dh = st.number_input("Enter dh value: ")
+        bur = st.number_input("Enter bur value")
+        dor = st.number_input("Enter dor value")
+        st.subheader("**Show results**")
+        well_S(Data(tvd, kop, bur, dor, dh), units)
 
-
-        elif st.checkbox("Horizontal wells"):
-            Data = namedtuple("Input", "TVD KOP BUR DOR DH")
-            st.subheader("**Enter input values**")
-            kop = st.number_input("Enter kop value: ")
-            tvd = st.number_input("Enter tvd value: ")
-            dh = st.number_input("Enter dh value: ")
-            bur1 = st.number_input("Enter bur1 value")
-            bur2 = st.number_input("Enter bur2 value")
-            st.subheader("**Show results**")
-            well_H(Data_H(tvd, kop, bur1, bur2, dh), units)
+    elif st.checkbox("Horizontal wells"):
+        Data = namedtuple("Input", "TVD KOP BUR DOR DH")
+        st.subheader("**Enter input values**")
+        kop = st.number_input("Enter kop value: ")
+        tvd = st.number_input("Enter tvd value: ")
+        dh = st.number_input("Enter dh value: ")
+        bur1 = st.number_input("Enter bur1 value")
+        bur2 = st.number_input("Enter bur2 value")
+        st.subheader("**Show results**")
+        well_H(Data_H(tvd, kop, bur1, bur2, dh), units)
