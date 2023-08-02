@@ -181,7 +181,7 @@ if file:
     elif options == "Basic Calculations":
         st.subheader("**Select units**")
         units = st.selectbox("Units", ("ingles", "metric"))
-        if st.checkbox("J-well type"):
+        if st.checkbox("J type well"):
             Data = namedtuple("Input", "TVD KOP BUR DH")
             st.subheader("**Enter input values**")
             kop = st.number_input("Enter kop value: ")
