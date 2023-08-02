@@ -260,6 +260,93 @@ def well_S(data: Data_S, unit="ingles"):
                 st.success(f"{param} -> {value:.3f} m")
 
 
+# Function to calcule Horizontal well parameters
+Data_H = namedtuple("Input", "TVD KOP BUR1 BUR2 DH")
+Output_H = namedtuple(
+    "Output", "R1 R2 Theta TVD_EOB1 Md_EOB1 Dh_EOB1 Tan_len Md_SOB2 Md_total"
+)
+
+
+def well_H(data: Data_H, unit="ingles"):
+    # Define the variables
+    tvd = data.TVD
+    kop = data.KOP
+    bur1 = data.BUR1
+    bur2 = data.BUR2
+    dh = data.DH
+    # Define curvature radius
+    if unit == "ingles":
+        R1 = 5729.58 / bur1
+        R2 = 5729.58 / bur2
+    else:
+        R1 = 1718.87 / bur1
+        R2 = 1718.87 / bur2
+
+    eg = (tvd - kop) - R2
+    eo = dh - R1
+    goe = degrees(atan(eg / eo))
+    og = sqrt(eg**2 + eo**2)
+    of = R1 - R2
+    gof = degrees(acos(of / og))
+    # angle of tangent section
+    theta = 180 - goe - gof
+    # tvd @ EOB1
+    tvd_eob1 = kop + (R1 * sin(radians(theta)))
+    # MD @ EOB1
+    if unit == "ingles":
+        md_eob1 = kop + (theta / bur1) * 100
+    else:
+        md_eob1 = kop + (theta / bur1) * 30
+    # dh @ EOB1
+    dh_eob1 = R1 - (R1 * cos(radians(theta)))
+    # BC segment
+    tan_len = sqrt(og**2 - of**2)
+    if unit == "ingles":
+        md_sob2 = kop + (theta / bur1) * 100 + tan_len
+    else:
+        md_sob2 = kop + (theta / bur1) * 30 + tan_len
+    # MD total
+    if unit == "ingles":
+        md_total = kop + (theta / bur1) * 100 + tan_len + ((90 - theta) / bur2) * 100
+    else:
+        md_total = kop + (theta / bur1) * 30 + tan_len + ((90 - theta) / bur2) * 30
+
+    output_H = Output_H(
+        R1=R1,
+        R2=R2,
+        Theta=theta,
+        TVD_EOB1=tvd_eob1,
+        Md_EOB1=md_eob1,
+        Dh_EOB1=dh_eob1,
+        Tan_len=tan_len,
+        Md_SOB2=md_sob2,
+        Md_total=md_total,
+    )
+
+    names = [
+        "R1",
+        "R2",
+        "Theta",
+        "TVD_EOB1",
+        "Md_EOB1",
+        "Dh_EOB1",
+        "Tan_len",
+        "Md_SOB2",
+        "Md_total",
+    ]
+    for param, value in zip(names, output_H):
+        if unit == "ingles":
+            if param == "theta":
+                st.success(f"{param} -> {value:.3f} degrees")
+            else:
+                st.success(f"{param} -> {value:.3f} ft")
+        else:
+            if param == "theta":
+                st.success(f"{param} -> {value:.3f} degrees")
+            else:
+                st.success(f"{param} -> {value:.3f} m")
+
+
 # Call data
 if file:
     df = pd.read_csv(file)
@@ -293,3 +380,15 @@ if file:
             dor = st.number_input("Enter dor value")
             st.subheader("**Show results**")
             well_S(Data(tvd, kop, bur, dor, dh), units)
+
+
+        elif st.checkbox("Horizontal wells"):
+            Data = namedtuple("Input", "TVD KOP BUR DOR DH")
+            st.subheader("**Enter input values**")
+            kop = st.number_input("Enter kop value: ")
+            tvd = st.number_input("Enter tvd value: ")
+            dh = st.number_input("Enter dh value: ")
+            bur1 = st.number_input("Enter bur1 value")
+            bur2 = st.number_input("Enter bur2 value")
+            st.subheader("**Show results**")
+            well_H(Data_H(tvd, kop, bur1, bur2, dh), units)
