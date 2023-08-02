@@ -176,3 +176,97 @@ dh = 3500  # ft
 
 #%% Results - Example 2
 well_S(Data_S(tvd, kop, bur, dor, dh))
+
+
+#%%Design function to calculate Horizontal type well parameters
+
+Data_H = namedtuple("Input", "TVD KOP BUR1 BUR2 DH")
+Output_H = namedtuple(
+    "Output", "R1 R2 Theta TVD_EOB1 Md_EOB1 Dh_EOB1 Tan_len Md_SOD2 Md_total"
+)
+
+
+def well_H(data: Data_H, unit="ingles"):
+    tvd = data.TVD
+    kop = data.KOP
+    bur1 = data.BUR1
+    bur2 = data.BUR2
+    dh = data.DH
+    if unit == "ingles":
+        R1 = 5729.58 / bur1
+        R2 = 5729.58 / bur2
+    else:
+        R1 = 1718.87 / bur1
+        R2 = 1718.87 / bur2
+    eg = (tvd - kop) - R2
+    eo = dh - R1
+
+    goe = degrees(atan(eg / eo))
+
+    og = sqrt(eg**2 + eo**2)
+    of = R1 - R2
+    gof = degrees(acos(of / og))
+    theta = 180 - goe - gof
+
+    tvd_eob1 = kop + (R1 * sin(radians(theta)))
+    if unit == "ingles":
+        md_eob1 = kop + (theta / bur1) * 100
+    else:
+        md_eob1 = kop + (theta / bur1) * 30
+
+    dh_eob1 = R1 - abs(R1 * cos(radians(theta)))
+    tan_len = sqrt(og**2 - of**2)
+
+    if unit == "ingles":
+        md_sod2 = kop + (theta / bur1) * 100 + tan_len
+    else:
+        md_sod2 = kop + (theta / bur1) * 30 + tan_len
+
+    if unit == "ingles":
+        md_total = kop + (theta / bur1) * 100 + tan_len + ((90 - theta) / bur2) * 100
+    else:
+        md_total = kop + (theta / bur1) * 30 + tan_len + ((90 - theta) / bur2) * 30
+
+    output_H = Output_H(
+        R1=R1,
+        R2=R2,
+        Theta=theta,
+        TVD_EOB1=tvd_eob1,
+        Md_EOB1=md_eob1,
+        Dh_EOB1=dh_eob1,
+        Tan_len=tan_len,
+        Md_SOD2=md_sod2,
+        Md_total=md_total,
+    )
+
+    names = [
+        "R1",
+        "R2",
+        "theta",
+        "tvd_EOB1",
+        "Md_EOB1",
+        "Dh_EOB1",
+        "Lengh_tan",
+        "Md_SOD2",
+        "Md_Total",
+    ]
+    for param, value in zip(names, output_H):
+        if unit == "ingles":
+            if param == "theta":
+                print(f"{param} -> {value:.3f} degrees")
+            else:
+                print(f"{param} -> {value:.3f} ft")
+        else:
+            if param == "theta":
+                print(f"{param} -> {value:.3f} degrees")
+            else:
+                print(f"{param} -> {value:.3f} m")
+#%% Datos de ejercicio 3
+KOP= 2000
+TVD= 3800
+BUR1= 5.73
+BUR2 = 9.55
+
+#%% Resultado de calculos del ejercicio 3
+well_H(Data_H(TVD, KOP, BUR1, BUR2))
+
