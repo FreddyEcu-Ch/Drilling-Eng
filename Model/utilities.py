@@ -176,3 +176,77 @@ dh = 3500  # ft
 
 #%% Results - Example 2
 well_S(Data_S(tvd, kop, bur, dor, dh))
+
+#%% Design function to calculate H type well parameters
+
+Data_H= namedtuple("Input", "TVD KOP BUR1 BUR2 DH")
+Output_S = namedtuple(
+    "Output", "R1 R2 Theta TVD_EOB Md_EOB Dh_EOB Tan_len Md_SOD Md_total"
+)
+
+
+def well_H(data: Data_S, unit="ingles"):
+    tvd = data.TVD
+    kop = data.KOP
+    bur1 = data.BUR1
+    bur2 = data.BUR2
+    dh = data.DH
+    if unit == "ingles":
+        R1 = 5729.58 / bur1
+        R2 = 5729.58 / bur2
+    else:
+        R1 = 1718.87 / bur1
+        R2 = 1718.87 / bur2
+    eg= (tvd-kop)-R2
+    eo = dh - kop
+    goe = degrees(atan(eg / eo))
+    og = sqrt(eg**2 + eo**2)
+    of = R1 - R2
+    gof = degrees(acos(of / og))
+    theta = 180 - goe - gof
+    tvd_eob = kop + R1 * sin(radians(theta))
+    md_eob = kop + (theta / bur1) * 100
+    dh_eob = R1 - abs(R1 * cos(radians(theta)))
+    bc= sqrt(og**2 + of**2)
+    md_sod = kop + (theta / bur) * 100 + bc
+    md_total = kop + (theta / bur1) * 100 + bc + (theta / bur2) * 100
+    kop + (theta / bur) * 30 + tan_len + (theta / dor) * 30
+
+    output_S = Output_S(
+        R1=R1,
+        R2=R2,
+        Theta=theta,
+        TVD_EOB=tvd_eob,
+        Md_EOB=md_eob,
+        Dh_EOB=dh_eob,
+        Md_SOD=md_sod,
+        Md_total=md_total,
+    )
+
+    names = [
+        "R1",
+        "R2",
+        "theta",
+        "tvd_EOB",
+        "Md_EOB",
+        "Dh_EOB",
+        "Md_SOD",
+        "Md_Total",
+    ]
+    for param, value in zip(names, output_S):
+        if unit == "ingles":
+            if param == "theta":
+                print(f"{param} -> {value} degrees")
+            else:
+                print(f"{param} -> {value} ft")
+        else:
+            if param == "theta":
+                print(f"{param} -> {value} degrees")
+            else:
+                print(f"{param} -> {value} m")
+#%% Data - Example 3
+kop = 6084  # ft
+tvd = 12000  # ft
+bur = 3  # o/100ft
+dor = 2  # o/ft
+dh = 3500  # ft
